@@ -9,6 +9,9 @@ let vm = new Vue({
         password2: '',
         mobile: '',
         allow: '',
+        image_code_url: '',
+        uuid: '',
+        image_code: '',
 
         // v-show
         error_name: false,
@@ -16,12 +19,23 @@ let vm = new Vue({
         error_password2: false,
         error_mobile: false,
         error_allow: true,
+        error_image_code: false,
 
         // error_message
         error_name_message: '',
         error_mobile_message: '',
+        error_image_code_message: '',
+    },
+    mounted() {
+        //生成图形验证码
+        this.generate_image_code();
     },
     methods: { //定义事件方法
+        // 生成图形验证码方法
+        generate_image_code() {
+            this.uuid = generateUUID();
+            this.image_code_url = '/image_codes/' + this.uuid + '/';
+        },
         // 校验用户名
         check_username(){
             let re = /^[a-zA-Z0-9_-]{5,20}$/;
@@ -97,12 +111,22 @@ let vm = new Vue({
                     })
             }
         },
+        // 校验图形验证码
+        check_image_code() {
+            if (this.image_code.length !=4) {
+                this.error_image_code_message = '请输入图形验证码';
+                this.error_image_code = true;
+            } else {
+                this.error_image_code = false;
+            }
+        },
+
         // 校验是否勾选协议
         check_allow(){
             if (this.allow) {
-                this.error_allow = true;
-            } else {
                 this.error_allow = false;
+            } else {
+                this.error_allow = true;
             }
         },
         // 监听表单提交事件
@@ -113,7 +137,7 @@ let vm = new Vue({
             this.check_mobile();
             this.check_allow();
 
-            if (this.error_name == true || this.error_password == true || this.error_password2 == true || this.error_mobile == true || this.error_allow == true) {
+            if (this.error_name == true || this.error_password == true || this.error_password2 == true || this.error_mobile == true || this.error_allow == false) {
                 window.event.returnValue = false;
             }
         },

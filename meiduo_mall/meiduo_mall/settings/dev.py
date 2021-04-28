@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # 'meiduo_mall.apps.users',  # 用户模块应用
     'users',  # 用户模块
     'contents',  # 首页广告模块
+    'verifications'  # 验证码模块 可以不用注册到django中 因为验证码功能不需要使用model迁移功能及template功能 按照正常流程也可以进行注册
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,13 @@ CACHES = {
     "session": {  # session
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "verify_code": {  # 验证码
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
