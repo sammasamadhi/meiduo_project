@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # 'meiduo_mall.apps.users',  # 用户模块应用
     'users',  # 用户模块
+    'contents',  # 首页广告模块
 ]
 
 MIDDLEWARE = [
@@ -211,3 +212,7 @@ LOGGING = {
         },
     }
 }
+
+# 指定自定义用户模型类 值的语法==> '子应用.用户模型类'
+AUTH_USER_MODEL = 'users.User'
+
