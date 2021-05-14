@@ -8,6 +8,7 @@ from verifications.libs.captcha.captcha import captcha
 from . import constants
 from meiduo_mall.utils.response_code import RETCODE
 from verifications.libs.yuntongxun.ccp_sms import CCP
+from celery_tasks.sms.tasks import send_sms_code
 # Create your views here.
 
 logger = logging.getLogger('django')
@@ -38,12 +39,15 @@ class SMSCodeView(View):
         sms_code = '%06d' % random.randint(0, 999999)
         logger.info(sms_code)
 
-        pl = redis_conn.pipline()
+        pl = redis_conn.pipeline()
         pl.setex('sms_%s' % mobile, constants.SMS_CODE_REDIS_EXPIRES, sms_code)
         pl.setex('send_flag_%s' % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
         pl.execute()
 
-        CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], constants.SEND_SMS_TEMPLATE_ID)
+        # 发送短信验证码
+        # CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], constants.SEND_SMS_TEMPLATE_ID)
+        # 使用celery发送短信验证码
+        send_sms_code.delay(mobile, sms_code)  # 千万不要忘记delay
 
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '发送短信成功'})
 
