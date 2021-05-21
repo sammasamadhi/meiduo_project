@@ -1,7 +1,39 @@
 # 自定义用户认证的后端 实现多账号登录
 from django.contrib.auth.backends import ModelBackend
 import re
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from django.conf import settings
+from itsdangerous import BadData
+
 from users.models import User
+from . import constants
+
+
+def check_verify_email_token(token):
+    """反序列化token，获取user"""
+    s = Serializer(settings.SECRET_KEY, constants.VERIFY_EMAIL_TOKEN_EXPIRES)
+    try:
+        data = s.loads(token)
+    except BadData:
+        return None
+    else:
+        user_id = data.get('user_id')
+        email = data.get('email')
+        try:
+            user = User.objects.get(id=user_id, email=email)
+        except User.DoesNotExist:
+            return None
+        else:
+            return user
+
+
+def generate_verify_email_url(user):
+    """商城邮箱激活链接生成"""
+    s = Serializer(settings.SECRET_KEY, constants.VERIFY_EMAIL_TOKEN_EXPIRES)
+    data = {'user_id': user.id, 'email': user.email}
+    token = s.dumps(data).decode()
+    verify_url = settings.EMAIL_VERIFY_URL + '?token=' + token
+    return verify_url
 
 
 def get_user_by_account(account):

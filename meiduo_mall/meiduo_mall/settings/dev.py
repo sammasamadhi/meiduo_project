@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     # 'meiduo_mall.apps.users',  # 用户模块应用
     'users',  # 用户模块
     'contents',  # 首页广告模块
-    'verifications'  # 验证码模块 可以不用注册到django中 因为验证码功能不需要使用model迁移功能及template功能 按照正常流程也可以进行注册
+    'verifications',  # 验证码模块 可以不用注册到django中 因为验证码功能不需要使用model迁移功能及template功能 按照正常流程也可以进行注册
+    'areas',  # 省市区三级联动
 ]
 
 MIDDLEWARE = [
@@ -227,3 +228,15 @@ AUTH_USER_MODEL = 'users.User'
 # 指定自定义用户认证后端
 AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileBackend']
 LOGIN_URL = '/login/'
+
+
+# 邮件参数
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 指定邮件后端
+EMAIL_HOST = 'smtp.163.com'  # 发邮件主机
+EMAIL_PORT = 25  # 发邮件端口
+EMAIL_HOST_USER = 'qwerkinglin@163.com'  # 授权的邮箱
+EMAIL_HOST_PASSWORD = 'VPDOQWDKQKAFWUOB'  # 邮箱授权时获得的密码，非注册登录密码
+EMAIL_FROM = 'meiduo<qwerkinglin@163.com>'   # 发件人抬头
+
+# 邮件验证链接
+EMAIL_VERIFY_URL = 'http://127.0.0.1:8000/emails/verification/'
