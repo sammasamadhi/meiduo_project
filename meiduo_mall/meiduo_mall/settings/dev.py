@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'contents',  # 首页广告模块
     'verifications',  # 验证码模块 可以不用注册到django中 因为验证码功能不需要使用model迁移功能及template功能 按照正常流程也可以进行注册
     'areas',  # 省市区三级联动
+    'goods',  # 商品模块
 ]
 
 MIDDLEWARE = [
