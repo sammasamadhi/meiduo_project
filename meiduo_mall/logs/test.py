@@ -12,7 +12,6 @@ class demoClass(object):
         print("__init__():", self, attribute)
         self.attribute = attribute
 
-
 test1 = demoClass("abc")
 print(test1.__class__.__mro__)
 # test2 = demoClass("xyz")
